@@ -22,7 +22,7 @@ public class Driver extends NamedEntity {
     }
 
 
-    public void updateHistory(Delivery d){
+    public void updateHistory(){
         history_num=history_num+1;
     }
 

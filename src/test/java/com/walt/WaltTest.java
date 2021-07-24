@@ -1,10 +1,7 @@
 package com.walt;
 
 import com.walt.dao.*;
-import com.walt.model.City;
-import com.walt.model.Customer;
-import com.walt.model.Driver;
-import com.walt.model.Restaurant;
+import com.walt.model.*;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -111,5 +109,47 @@ public class WaltTest {
 
         assertEquals(((List<City>) cityRepository.findAll()).size(),4);
         assertEquals((driverRepository.findAllDriversByCity(cityRepository.findByName("Beer-Sheva")).size()), 2);
+    }
+
+    @Test
+    public void createDelivery(){
+
+       Delivery d= waltService.createOrderAndAssignDriver(customerRepository.findByName("Beethoven"),restaurantRepository.findByName("meat"),new Date());
+       Delivery d2= waltService.createOrderAndAssignDriver(customerRepository.findByName("Mozart"),restaurantRepository.findByName("meat"),new Date());
+       Delivery d3= waltService.createOrderAndAssignDriver(customerRepository.findByName("Chopin"),restaurantRepository.findByName("meat"),new Date());
+        assertEquals(d.getCustomer(),"Beethoven");
+        assertEquals(d2.getCustomer(),"Mozart");
+        assertEquals(d3.getCustomer(),"Chopin");
+
+    }
+
+
+    @Test
+    public void getReport(){
+
+        List<DriverDistance> list=waltService.getDriverRankReport();
+
+        assertEquals(list.size(),3);
+
+
+    }
+
+    @Test
+    public void getDelivery(){
+
+        Delivery d3= waltService.createOrderAndAssignDriver(customerRepository.findByName("Bach"),restaurantRepository.findByName("meat"),new Date());
+        String name=d3.getDriver().getName();
+        List<Driver> list_driver= (List<Driver>)(driverRepository.findAll());
+        boolean exist=false;
+        for (int i=0; i<list_driver.size(); i++){
+
+            if(name.equals(list_driver.get(i).getName())){
+                exist=true;
+            }
+        }
+
+        assertEquals(exist,true);
+
+
     }
 }
